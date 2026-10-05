@@ -1,0 +1,25 @@
+services:
+  frigate:
+    image: ghcr.io/blakeblackshear/frigate:0.17.2
+    container_name: frigate
+    restart: unless-stopped
+    stop_grace_period: 30s
+    shm_size: "256mb"
+    devices:
+      - /dev/dri:/dev/dri # GPU Intel: descodificação VAAPI e deteção OpenVINO
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config:/config
+      - ./storage:/media/frigate # disco virtual de 150 GB (limite de espaço)
+      - ./media:/media/teste:ro # vídeos de teste (câmara falsa)
+      - type: tmpfs
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    environment:
+      FRIGATE_JWT_SECRET: ${FRIGATE_JWT_SECRET}
+    # Nunca 0.0.0.0: o Docker passa por cima do ufw.
+    # Só a porta autenticada; a 5000 (sem login) não é publicada.
+    ports:
+      - "127.0.0.1:8971:8971"
+      - "100.103.233.84:8971:8971" # IP Tailscale do dogcam

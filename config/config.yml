@@ -1,0 +1,63 @@
+mqtt:
+  enabled: false
+
+auth:
+  enabled: true
+  failed_login_rate_limit: 1/second;5/minute;20/hour
+
+detectors:
+  ov:
+    type: openvino
+    device: GPU
+
+model:
+  width: 300
+  height: 300
+  input_tensor: nhwc
+  input_pixel_format: bgr
+  path: /openvino-model/ssdlite_mobilenet_v2.xml
+  labelmap_path: /openvino-model/coco_91cl_bkgr.txt
+
+ffmpeg:
+  hwaccel_args: preset-vaapi
+
+objects:
+  track:
+    - dog
+
+review:
+  alerts:
+    labels:
+      - dog
+
+record:
+  enabled: true
+  continuous:
+    days: 2
+  alerts:
+    retain:
+      days: 14
+      mode: all
+  detections:
+    retain:
+      days: 14
+      mode: all
+
+snapshots:
+  enabled: true
+  retain:
+    default: 14
+
+cameras:
+  teste:
+    ffmpeg:
+      inputs:
+        - path: /media/teste/teste.mp4
+          input_args: -re -stream_loop -1 -fflags +genpts
+          roles:
+            - detect
+            - record
+    detect:
+      enabled: true
+      fps: 5
+version: 0.17-0
