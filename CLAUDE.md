@@ -9,6 +9,8 @@ Fala com o Pedro em português de Portugal. Explica cada passo em linguagem simp
 - Ubuntu Server 26.04 LTS, hostname dogcam, utilizador pedro
 - Rede: Wi-Fi wlp2s0 (netplan em /etc/netplan/60-wifi.yaml), IP 192.168.1.249. Mais tarde passa para cabo, com um adaptador USB-C TP-Link UE300C
 - Já feito: atualizações, a tampa fechada não suspende (/etc/systemd/logind.conf.d/lid.conf), sleep/suspend/hibernate mascarados
+- Temperatura: turbo da CPU desligado (máx. 2,3 GHz, /etc/tmpfiles.d/dogcam-no-turbo.conf) e mbpfan a controlar a ventoinha (/etc/mbpfan.conf, valores padrão). Sem isto a CPU chegava aos 97 °C; com isto fica nos 70-77 °C com o Frigate a trabalhar
+- Disco do Frigate: disco virtual ext4 de 150 GB (espaço já reservado) em /var/lib/dogcam/frigate-storage.img, montado em ~/dogcam/storage pelo fstab (loop,nofail). A pasta por baixo tem chattr +i, para nada ser gravado no disco principal se o disco virtual não montar
 - Bateria a 63% da capacidade original (3004 de 4790 mAh, 451 ciclos), sem inchaço. Objetivo: limitar a carga a 60% (applesmc-next, a confirmar neste modelo)
 - Sudo sem palavra-passe é temporário (/etc/sudoers.d/90-dogcam-setup); é para remover no fim da fase 1
 - O ecrã do MacBook corta as últimas linhas da consola. Prefere comandos não interativos (-y, DEBIAN_FRONTEND=noninteractive)
