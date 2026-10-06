@@ -12,7 +12,7 @@ Fala com o Pedro em português de Portugal. Explica cada passo em linguagem simp
 - Temperatura: turbo da CPU desligado (máx. 2,3 GHz, /etc/tmpfiles.d/dogcam-no-turbo.conf) e mbpfan a controlar a ventoinha (/etc/mbpfan.conf, valores padrão). Sem isto a CPU chegava aos 97 °C; com isto fica nos 70-77 °C com o Frigate a trabalhar
 - Disco do Frigate: disco virtual ext4 de 150 GB (espaço já reservado) em /var/lib/dogcam/frigate-storage.img, montado em ~/dogcam/storage pelo fstab (loop,nofail). A pasta por baixo tem chattr +i, para nada ser gravado no disco principal se o disco virtual não montar
 - Bateria a 63% da capacidade original (3004 de 4790 mAh, 451 ciclos), sem inchaço. Objetivo: limitar a carga a 60% (applesmc-next, a confirmar neste modelo)
-- Sudo sem palavra-passe é temporário (/etc/sudoers.d/90-dogcam-setup); é para remover no fim da fase 1
+- Fase 1 concluída (2026-10-06): Frigate a funcionar e visto no iPhone por Tailscale. Sudo sem palavra-passe removido; agora o sudo pede palavra-passe. Quando um passo precisar de sudo, pede ao Pedro para o correr com `! sudo ...`
 - O ecrã do MacBook corta as últimas linhas da consola. Prefere comandos não interativos (-y, DEBIAN_FRONTEND=noninteractive)
 
 ## Arquitetura
