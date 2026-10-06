@@ -4,6 +4,10 @@ mqtt:
 auth:
   enabled: true
   failed_login_rate_limit: 1/second;5/minute;20/hour
+  # O tailscale serve chega ao Frigate pelo gateway da rede Docker; confiar no
+  # X-Forwarded-For dele para o limite de logins se aplicar a cada dispositivo.
+  trusted_proxies:
+    - 172.16.0.0/12
 
 detectors:
   ov:
