@@ -1,0 +1,10 @@
+# DogCam: a cada minuto (dogcam-prochot-vigia.timer), se a CPU estiver presa abaixo de
+# 1 GHz com carga, o carregador ligado e menos de 85 °C, desliga o BD PROCHOT e avisa no
+# Telegram. A 90 °C ou mais não mexe e avisa.
+[Unit]
+Description=DogCam: vigia do BD PROCHOT
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/sbin/modprobe msr
+ExecStart=/usr/local/sbin/dogcam-prochot vigiar

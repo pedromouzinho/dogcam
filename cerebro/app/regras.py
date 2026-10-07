@@ -72,6 +72,7 @@ class Regras:
         self.fps = None
         self.sem_imagem_desde = None
         self.sem_imagem_alertado = False
+        self.sem_imagem_longa_alertado = False
         self.sem_corrente = False
         self.enviados: dict[str, float] = {}
         self.pausa_ate = None
@@ -181,6 +182,7 @@ class Regras:
             out.append(Diario("camara", f"Câmara sem imagem durante {duracao(tempo)}"))
             self.sem_imagem_desde = None
             self.sem_imagem_alertado = False
+            self.sem_imagem_longa_alertado = False
             # Sem imagem não se pode ter visto o cão: o relógio de desapareceu recomeça.
             if self.ultimo_visto is not None:
                 self.ultimo_visto = agora
@@ -209,6 +211,13 @@ class Regras:
                 r = self._alerta("sem_imagem", f"Câmara sem imagem há {duracao(tempo)}.", agora, foto=False)
                 if any(isinstance(x, Alerta) for x in r):
                     self.sem_imagem_alertado = True
+                out += r
+            # Depois de uma falha longa a OctoStream deixa de tentar (testes de 2026-10-07).
+            if not self.sem_imagem_longa_alertado and tempo >= self.l["sem_imagem_longa_s"]:
+                r = self._alerta("sem_imagem_longa", f"Câmara sem imagem há {duracao(tempo)}: abre e fecha a OctoStream "
+                                 "no iPad (desliza para cima e fecha a app, volta a abri-la e carrega em Go Live).", agora, foto=False)
+                if any(isinstance(x, Alerta) for x in r):
+                    self.sem_imagem_longa_alertado = True
                 out += r
             return out  # sem imagem, as regras do cão ficam suspensas
 

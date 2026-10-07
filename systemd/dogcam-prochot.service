@@ -1,0 +1,13 @@
+# DogCam: desliga o BD PROCHOT em cada arranque (o MacBook trava a CPU a 400 MHz).
+# Instalado em /etc/systemd/system/. Programa: /usr/local/sbin/dogcam-prochot (root).
+[Unit]
+Description=DogCam: desligar o BD PROCHOT no arranque
+After=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/sbin/modprobe msr
+ExecStart=/usr/local/sbin/dogcam-prochot vigiar --arranque
+
+[Install]
+WantedBy=multi-user.target

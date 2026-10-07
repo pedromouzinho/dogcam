@@ -1,0 +1,10 @@
+[Unit]
+Description=DogCam: vigia do BD PROCHOT a cada minuto
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

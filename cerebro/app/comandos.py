@@ -9,7 +9,7 @@ AJUDA = ("Comandos:\n/foto - imagem de agora\n/estado - onde está e últimos ev
          "/pausa [min] - pausa os alertas do cão (30 min se não disseres)\n/retomar - volta a avisar\n"
          "/diario - resumo das últimas 12 h\n/teste - alerta de teste do cão (respeita a /pausa)")
 NOMES = {"anda_demasiado": "anda demasiado", "varanda": "varanda", "desapareceu": "desapareceu",
-         "sem_imagem": "câmara sem imagem", "imagem_voltou": "câmara voltou", "sem_corrente": "sem corrente",
+         "sem_imagem": "câmara sem imagem", "sem_imagem_longa": "câmara sem imagem (OctoStream)", "imagem_voltou": "câmara voltou", "sem_corrente": "sem corrente",
          "corrente_voltou": "corrente voltou", "cpu_presa": "CPU presa", "suspeita": "suspeita (Claude)",
          "suspeita_nao_confirmada": "suspeita NÃO confirmada", "limite_claude": "limite do Claude", "teste_cao": "teste"}
 FEEDBACK = {1: " ✅", 0: " ❌", None: ""}

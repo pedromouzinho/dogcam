@@ -5,7 +5,7 @@ import pytest
 
 from app.regras import Alerta, Diario, Regras
 
-LIMITES = {"anda_demasiado_s": 120, "varanda_s": 600, "desapareceu_s": 60, "sem_imagem_s": 30,
+LIMITES = {"anda_demasiado_s": 120, "varanda_s": 600, "desapareceu_s": 60, "sem_imagem_s": 30, "sem_imagem_longa_s": 300,
            "repetir_alerta_s": 300, "tolerancia_perda_s": 15, "cpu_minima_mhz": 1000,
            "pausa_padrao_min": 30, "diario_horas": 12,
            "vigia_s": 0.4, "suspeita_s": 5, "movimento_caixa_min": 0.02, "movimento_pausa_s": 1.5, "duvida_s": 20,
@@ -307,3 +307,16 @@ def test_zonas_vazias_do_frigate_nao_apagam_o_ultimo_sitio():
     c.passa(300)
     assert c.r.ultimo_sitio == "cama" and c.alertas() == []
     assert [d.zona for d in c.diario("sitio")] == ["cama"]    # sem diário a alternar
+
+
+def test_camara_sem_imagem_mais_de_5_min_manda_abrir_e_fechar_a_octostream():
+    c = Cena()
+    c.passa(290, fps=0.0)
+    assert [a.tipo for a in c.alertas()] == ["sem_imagem"]
+    c.passa(20, fps=0.0)
+    longa = c.alertas("sem_imagem_longa")
+    assert len(longa) == 1 and "abre e fecha a OctoStream" in longa[0].texto
+    c.passa(1200, fps=0.0)
+    assert len(c.alertas("sem_imagem_longa")) == 1            # uma vez por falha
+    c.passa(5)
+    assert c.alertas()[-1].tipo == "imagem_voltou"

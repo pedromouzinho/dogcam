@@ -9,6 +9,7 @@ limites:
   varanda_s: 600            # VARANDA: alerta se não voltar da varanda ao fim disto
   desapareceu_s: 60         # DESAPARECEU: sem ser visto e sem movimento durante isto
   sem_imagem_s: 30          # CÂMARA SEM IMAGEM durante isto
+  sem_imagem_longa_s: 300   # ... e ao fim disto: "abre e fecha a OctoStream no iPad" (uma vez por falha)
   repetir_alerta_s: 300     # não repetir o mesmo alerta antes disto
   tolerancia_perda_s: 15    # perda breve da deteção que não interrompe os "2 min seguidos"
   cpu_minima_mhz: 1000      # SERVIDOR: CPU presa abaixo disto (PROCHOT)
@@ -26,7 +27,7 @@ limites:
   claude_intervalo_s: 30    # no máximo 1 chamada a cada isto
   claude_por_dia: 300       # e no máximo isto por dia (depois só regras locais)
   claude_tempo_max_s: 15    # mais do que isto conta como falha
-  claude_margem: 0.3        # margem à volta da caixa do cão nos recortes
+  claude_margem: 0.5        # margem à volta da caixa do cão (0,3 cortava a cabeça e o cone)
   claude_lado_minimo_px: 512
   claude_preco_entrada_usd_mtok: 1.0   # Haiku 4.5, para o custo no /diario
   claude_preco_saida_usd_mtok: 5.0

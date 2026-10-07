@@ -87,19 +87,19 @@ cameras:
       width: 1280
       height: 720
       fps: 3
-    # Zonas desenhadas com o Pedro em 2026-10-07 (iPad na posição final; imagens em
+    # Zonas redesenhadas com o Pedro em 2026-10-07 ~20:10 (o iPad mudou de ângulo; imagens em
     # media/zonas/). Números sem zeros à direita: o Frigate 0.17 compara-os como
     # texto com "1.0" e "1.000" põe-no em modo de segurança. O Frigate usa o ponto do meio da parte de baixo da caixa do cão.
     # descanso sobrepõe-se a quarto de propósito: o cão deitado aí fica nas duas.
     zones:
       cama:
-        coordinates: 0.517,0.333,0.591,0.322,0.713,0.336,0.791,0.364,0.869,0.364,0.978,0.333,1,0.375,1,1,0.505,1,0.502,0.542
+        coordinates: 0.406,0.5,0.547,0.503,0.648,0.51,0.707,0.503,0.738,0.456,0.906,0.458,0.898,0.521,0.852,0.535,0.922,0.778,0.996,1,0.344,1,0.379,0.681
       descanso:
-        coordinates: 0.267,0.375,0.513,0.375,0.502,0.542,0.505,1,0.267,1,0.181,0.694,0.212,0.611
+        coordinates: 0.258,0.528,0.402,0.514,0.379,0.681,0.344,1,0.086,1,0.133,0.778,0.195,0.625
       porta_varanda:
-        coordinates: 0.42,0,0.666,0,0.646,0.211,0.591,0.222,0.572,0.292,0.431,0.306,0.408,0.211
+        coordinates: 0.312,0,0.539,0,0.535,0.354,0.547,0.403,0.438,0.41,0.328,0.41,0.309,0.354
       tigelas:
-        coordinates: 0.591,0.201,0.857,0.211,0.869,0.364,0.791,0.364,0.713,0.336,0.591,0.322,0.572,0.292,0.591,0.222
+        coordinates: 0.438,0.41,0.547,0.403,0.695,0.403,0.707,0.503,0.648,0.51,0.547,0.503,0.438,0.486
       quarto:
-        coordinates: 0,0.667,0.173,0.667,0.326,0.264,0.408,0.211,0.431,0.306,0.572,0.292,0.591,0.322,0.517,0.333,0.502,0.542,0.505,1,0,1
+        coordinates: 0,0.958,0.016,0.861,0.195,0.458,0.234,0.417,0.328,0.41,0.438,0.41,0.438,0.486,0.406,0.5,0.379,0.681,0.344,1,0,1
 version: 0.17-0
