@@ -23,6 +23,19 @@ systemctl is-active -q mbpfan && ok "mbpfan ativo" || mau "mbpfan não está ati
 
 [ "$(cat /sys/devices/system/cpu/intel_pstate/no_turbo)" = 1 ] && ok "Turbo desligado (máx. $(($(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq)/1000)) MHz)" || mau "Turbo ligado"
 
+# Com o Frigate a trabalhar há sempre uma CPU acima de 1 GHz; se nenhuma passar
+# disso em 5 s, a placa-mãe está a travar a CPU (BD PROCHOT, ver CLAUDE.md).
+mhz=0
+for i in 1 2 3 4 5; do
+  for f in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_cur_freq; do
+    [ $(($(cat "$f")/1000)) -gt $mhz ] && mhz=$(($(cat "$f")/1000))
+  done
+  sleep 1
+done
+[ $mhz -ge 1000 ] && ok "CPU a acelerar (até $mhz MHz)" || mau "CPU presa abaixo de 1 GHz (máx. $mhz MHz): travão PROCHOT? Ver carregador e reset ao SMC"
+
+[ "$(cat /sys/class/power_supply/ADP1/online)" = 1 ] && ok "Carregador ligado (bateria a $(cat /sys/class/power_supply/BAT0/capacity)%)" || mau "Servidor só com a bateria ($(cat /sys/class/power_supply/BAT0/capacity)%): sem corrente!"
+
 tailscale status >/dev/null 2>&1 && ok "Tailscale ligado ($(tailscale ip -4))" || mau "Tailscale desligado"
 
 url=$(tailscale serve status 2>/dev/null | awk '/^https:/{print $1; exit}')
