@@ -1,0 +1,17 @@
+# Rede por cabo (adaptador USB-C do hub, Realtek RTL8153, driver r8152) como
+# ligação principal. O Wi-Fi (60-wifi.yaml, métrica 600) fica como reserva.
+# Instalado em /etc/netplan/50-cabo.yaml (root, chmod 600).
+network:
+  version: 2
+  ethernets:
+    cabo:
+      match:
+        macaddress: "d0:c0:bf:27:ca:26"
+      dhcp4: true
+      # Identificar-se ao router pelo MAC (como fazia o zzzz-dracut-default):
+      # sem isto o netplan usa um DUID e o router dá outro IP (.70 em vez de .69).
+      dhcp-identifier: mac
+      dhcp4-overrides:
+        route-metric: 100
+      # Se o hub não estiver ligado, o arranque não fica à espera do cabo.
+      optional: true

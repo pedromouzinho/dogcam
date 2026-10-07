@@ -1,0 +1,9 @@
+# BEGIN DOGCAM
+# O Docker publica a porta RTMP (1935) do Frigate por cima do ufw. Aqui, na
+# cadeia DOCKER-USER (que o Docker consulta antes das suas regras), só passa
+# quem vem da rede local 192.168.1.0/24. Instalado no fim de /etc/ufw/after.rules.
+*filter
+:DOCKER-USER - [0:0]
+-A DOCKER-USER -p tcp -m conntrack --ctorigdstport 1935 --ctdir ORIGINAL ! -s 192.168.1.0/24 -j DROP
+COMMIT
+# END DOGCAM

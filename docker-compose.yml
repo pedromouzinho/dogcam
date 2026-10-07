@@ -11,7 +11,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./config:/config
       - ./storage:/media/frigate # disco virtual de 150 GB (limite de espaço)
-      - ./media:/media/teste:ro # vídeos de teste (câmara falsa)
       - type: tmpfs
         target: /tmp/cache
         tmpfs:
@@ -23,3 +22,8 @@ services:
     ports:
       - "127.0.0.1:8971:8971"
       - "100.103.233.84:8971:8971" # IP Tailscale do dogcam
+      # RTMP do iPad: só no IP da rede local. O Docker passa por cima do ufw,
+      # por isso a origem é limitada a 192.168.1.0/24 na cadeia DOCKER-USER
+      # (/etc/ufw/after.rules).
+      - "192.168.1.69:1935:1935" # cabo (principal; o iPad envia para aqui)
+      - "192.168.1.249:1935:1935" # Wi-Fi (reserva)

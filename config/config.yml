@@ -25,6 +25,15 @@ model:
 ffmpeg:
   hwaccel_args: preset-vaapi
 
+go2rtc:
+  # O iPad (app OctoStream) empurra o vídeo por RTMP para
+  # rtmp://192.168.1.249:1935/quarto_ipad. A porta só está publicada no IP da
+  # rede local (docker-compose.yml) e filtrada para 192.168.1.0/24 (DOCKER-USER).
+  rtmp:
+    listen: ":1935"
+  streams:
+    quarto_ipad: # vazio: a fonte é o envio RTMP do iPad
+
 objects:
   track:
     - dog
@@ -53,15 +62,21 @@ snapshots:
     default: 14
 
 cameras:
-  teste:
+  # Câmara provisória: iPad no quarto (OctoStream, RTMP 720p30, sem áudio).
+  # Lê o restream do go2rtc; se o iPad cair, o ffmpeg do Frigate volta a tentar
+  # sozinho e retoma quando a app voltar a enviar.
+  quarto_ipad:
     ffmpeg:
       inputs:
-        - path: /media/teste/teste.mp4
-          input_args: -re -stream_loop -1 -fflags +genpts
+        - path: rtsp://127.0.0.1:8554/quarto_ipad
+          # generic: tempos pelo relógio do servidor; o iPad salta os DTS a cada ~1 min
+          input_args: preset-rtsp-generic
           roles:
             - detect
             - record
     detect:
       enabled: true
+      width: 1280
+      height: 720
       fps: 5
 version: 0.17-0
