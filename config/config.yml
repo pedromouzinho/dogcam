@@ -14,13 +14,18 @@ detectors:
     type: openvino
     device: GPU
 
+# YOLOv9-s 320 (gerado com modelos/yolov9-export.Dockerfile; o .onnx fica em
+# config/model_cache, fora do git). Em 2026-10-07 ganhou ao SSDLite em todas as
+# situações do clip media/cao-real.mp4, mas demora ~45 ms por recorte na GPU:
+# por isso a deteção está a 3 imagens/s.
 model:
-  width: 300
-  height: 300
-  input_tensor: nhwc
-  input_pixel_format: bgr
-  path: /openvino-model/ssdlite_mobilenet_v2.xml
-  labelmap_path: /openvino-model/coco_91cl_bkgr.txt
+  model_type: yolo-generic
+  width: 320
+  height: 320
+  input_tensor: nchw
+  input_dtype: float
+  path: /config/model_cache/yolov9-s-320.onnx
+  labelmap_path: /labelmap/coco-80.txt
 
 ffmpeg:
   hwaccel_args: preset-vaapi
@@ -78,5 +83,5 @@ cameras:
       enabled: true
       width: 1280
       height: 720
-      fps: 5
+      fps: 3
 version: 0.17-0
