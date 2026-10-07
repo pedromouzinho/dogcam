@@ -10,7 +10,7 @@ Ordem: 1 → 4 → 5 → 6 → 3 → 2 (o reinício fica para o fim porque fecha
 | 5 | Anda demasiado (cão simulado) | "anda demasiado" | **passou** (com instância de teste) |
 | 6 | /pausa 5 | nenhum alerta do cão durante 5 min, depois volta sozinho | **passou** |
 | 3 | Tirar o cabo de rede 2 min | Wi-Fi assume; a câmara fica sem imagem (o iPad não chega ao dogcam pelo Wi-Fi) | **falhou em parte**: o Wi-Fi assumiu, mas o adaptador do cabo não voltou sozinho |
-| 2 | Reiniciar o servidor | tudo volta sozinho; healthchecks avisa se demorar mais de 3 min | por fazer |
+| 2 | Desligar e ligar o servidor | tudo volta sozinho; healthchecks avisa se demorar mais de 3 min | **passou em parte**: o servidor voltou sozinho, o iPad não |
 
 ## Detalhes
 
@@ -79,7 +79,30 @@ Ordem: 1 → 4 → 5 → 6 → 3 → 2 (o reinício fica para o fim porque fecha
   depois do arranque, o hub não aparece em USB 3.0; às 19:23 a placa de rede ainda funcionou só por USB 2.0, desta vez não.
   Solução: arrancar o servidor com o hub ligado (teste 2).
 
-### 2. Reiniciar o servidor (a fazer)
-- Plano: sudo shutdown -h now com o hub ligado; esperar 4 min (mais do que os 3 min do healthchecks.io); ligar o MacBook.
+### 2. Desligar e ligar o servidor
+- O Tailscale do Mac estava offline, por isso o Pedro desligou com um toque curto no botão (HandlePowerKey=poweroff: encerramento limpo,
+  igual a shutdown; manter premido corta a corrente a seco e não se deve fazer).
+- 19:43:40 encerramento limpo; 19:47:57 arranque: **4 min 17 s desligado**.
+- O cabo voltou sozinho com o .69 e a rota principal, outra vez em USB 3.0 (Bus 004, 5000 Mb/s): arrancar com o hub ligado resolveu o teste 3.
+- Frigate (healthy), Mosquitto e cérebro arrancaram sozinhos (~1 min depois do arranque). CPU com carga 2300 MHz, carregador ligado, bateria cheia.
+- 19:48:13 cérebro ligado ("Cérebro DogCam ligado."); 19:48:43 "Câmara sem imagem há 30 s." entregue.
+- **O iPad não voltou sozinho**: às 19:52 respondia ao ping pelo cabo mas não enviava. Depois de uma falha longa (cabo desde as 19:29 e servidor
+  desligado) a OctoStream deixou de tentar. Sem câmara não há ping ao healthchecks.io, por isso este continua a dar o servidor como em baixo.
+- O Pedro parou e voltou a carregar em Go Live; nem assim. Só voltou depois de fechar a app de vez e voltar a abri-la: 20:05:43
+  "A câmara voltou a ter imagem (esteve sem imagem 17 min 29 s)"; ping ao healthchecks.io de novo às ~20:06.
+- healthchecks.io: o aviso "down" chegou às 19:33 (3 min depois do último ping, às ~19:30, no teste 3), o que confirma period + grace de ~3 min.
+  Ao desligar às 19:43 já estava "down", por isso não houve segundo aviso. O "Cérebro DogCam ligado." chegou às 19:48.
+
+## Resumo
+- Passaram: 1 (iPad parado), 4 (falha do Claude), 5 (anda demasiado, com instância de teste), 6 (/pausa).
+- Em parte: 3 (cabo) e 2 (desligar). A rede, o Tailscale, os alertas e os serviços aguentam e voltam sozinhos, mas:
+  - **o iPad é o ponto fraco**: depois de uma falha curta volta em ~3 min; depois de uma falha longa a OctoStream desiste e é preciso fechar e
+    abrir a app. Até chegarem as Tapo (o Frigate vai buscar a imagem), um corte de luz à noite pode deixar a câmara em baixo até alguém mexer.
+    O alerta "sem imagem" e o "down" do healthchecks.io avisam disso.
+  - **o hub ligado depois do arranque** pode não trazer a placa de rede (só USB 2.0); arrancar com o hub ligado resolve.
+- Corrigido durante os testes: alerta de CPU sem carga (energia.sh mede com carga), "desapareceu" falso por zonas vazias do Frigate, /teste novo.
+- Pendente: PROCHOT intermitente às 19:28 com o carregador direto (desde então sempre 2300 MHz com carga); margem dos recortes do Claude
+  (cortou a cabeça e o cone numa suspeita real); realinhar as zonas depois de o iPad ter mudado de posição.
+
 - Esperado: o healthchecks.io avisa que o servidor está em baixo e depois que voltou; o cabo volta com o .69; Frigate, Mosquitto, cérebro e
   iPad voltam sozinhos; o cérebro envia "Cérebro DogCam ligado".
