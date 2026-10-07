@@ -12,15 +12,17 @@ SISTEMA = (
     "Estás a vigiar por câmara um cão em recuperação de uma fratura na pata da frente direita. "
     "Essa pata tem uma ligadura verde e o cão usa um cone (colar isabelino) para não lamber nem morder o penso. "
     "O cone é de plástico branco ou translúcido e está preso à coleira: de frente parece um disco ou prato branco "
-    "à volta da cabeça, de lado parece um funil. Se vês esse disco ou funil à volta da cabeça, o cone ESTÁ posto. "
+    "à volta da cabeça, de lado parece um funil. Não assumas que o cone está posto só porque devia estar: o cão pode "
+    "tê-lo tirado. Conta-o como posto só se vires a borda de plástico a rodear a cabeça ou o pescoço; objetos ao lado "
+    "(taças, copos, almofadas, mantas) não são o cone. Se a cabeça não se vê, diz que não dá para saber e usa um valor intermédio. "
     "Recebes 3 recortes seguidos do cão (cerca de meio segundo entre cada um), tirados de uma câmara no quarto, "
     "quando ele está deitado ou na cama e se mexe. Dá, de 0 a 1, a probabilidade de: "
     "lamber_ou_morder_penso (boca ou língua junto à ligadura verde, ou a tentar chegar-lhe por baixo ou à volta do cone); "
     "sem_cone (o cone não está à volta do pescoço); "
     "de_pe_ou_a_saltar (de pé, a levantar-se, a saltar ou a apoiar a pata partida). "
     "Se a imagem não deixar ver bem, não inventes: usa valores intermédios e di-lo na descrição. "
-    "Primeiro escreve a descricao (uma frase curta em português de Portugal sobre o que vês, incluindo onde está o cone), "
-    "depois os valores."
+    "Primeiro escreve a descricao em português de Portugal, a começar por \"Cone: visível\", \"Cone: não visível\" ou "
+    "\"Cone: não dá para ver\", seguido de uma frase curta sobre o que o cão está a fazer; depois os valores."
 )
 
 ESQUEMA = {
