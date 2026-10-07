@@ -7,11 +7,11 @@ from .regras import duracao
 TZ = ZoneInfo("Europe/Lisbon")
 AJUDA = ("Comandos:\n/foto - imagem de agora\n/estado - onde está e últimos eventos\n"
          "/pausa [min] - pausa os alertas do cão (30 min se não disseres)\n/retomar - volta a avisar\n"
-         "/diario - resumo das últimas 12 h")
+         "/diario - resumo das últimas 12 h\n/teste - alerta de teste do cão (respeita a /pausa)")
 NOMES = {"anda_demasiado": "anda demasiado", "varanda": "varanda", "desapareceu": "desapareceu",
          "sem_imagem": "câmara sem imagem", "imagem_voltou": "câmara voltou", "sem_corrente": "sem corrente",
          "corrente_voltou": "corrente voltou", "cpu_presa": "CPU presa", "suspeita": "suspeita (Claude)",
-         "suspeita_nao_confirmada": "suspeita NÃO confirmada", "limite_claude": "limite do Claude"}
+         "suspeita_nao_confirmada": "suspeita NÃO confirmada", "limite_claude": "limite do Claude", "teste_cao": "teste"}
 FEEDBACK = {1: " ✅", 0: " ❌", None: ""}
 
 
@@ -25,10 +25,11 @@ def hora(ts: float) -> str:
 
 
 class Comandos:
-    def __init__(self, chat_id, regras, db, enviar_texto, enviar_foto, limites, lock):
+    def __init__(self, chat_id, regras, db, enviar_texto, enviar_foto, limites, lock, alertar=None):
         self.chat_id = str(chat_id) if chat_id else None
         self.r, self.db, self.l, self.lock = regras, db, limites, lock
         self.texto, self.foto = enviar_texto, enviar_foto
+        self.alertar = alertar      # Cerebro.tratar: envia alertas com botões e guarda-os
 
     def tratar(self, msg: dict, agora: float) -> bool:
         """Devolve False se a mensagem não vem do chat do Pedro (ignorada)."""
@@ -59,6 +60,18 @@ class Comandos:
             self.texto("Alertas do cão retomados.")
         elif cmd == "/diario":
             self.texto(self.diario(agora))
+        elif cmd == "/teste":
+            with self.lock:
+                acoes = self.r._alerta("teste_cao", "TESTE: alerta de teste do cão (/teste).", agora)
+            if any(type(a).__name__ == "Alerta" for a in acoes):
+                if self.alertar:
+                    self.alertar(acoes, agora)
+            elif acoes:
+                self.texto(f"Em pausa até às {hora(self.r.pausa_ate)}: o alerta de teste não foi enviado (ficou no diário).")
+                if self.alertar:
+                    self.alertar(acoes, agora)
+            else:
+                self.texto("Já enviei um alerta de teste há menos de 5 min; não repito.")
         else:
             self.texto(AJUDA)
         return True

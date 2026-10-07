@@ -13,7 +13,7 @@ SITIOS_DE_DESCANSO = ("cama", "descanso")
 SEM_ALARME_DE_DESAPARECEU = ("cama", "descanso", "porta_varanda")
 # descanso sobrepõe-se a quarto: fica o sítio mais específico.
 PRIORIDADE_DOS_SITIOS = ("cama", "descanso", "porta_varanda", "tigelas", "quarto")
-ALERTAS_DO_CAO = ("anda_demasiado", "varanda", "desapareceu", "suspeita", "suspeita_nao_confirmada")
+ALERTAS_DO_CAO = ("anda_demasiado", "varanda", "desapareceu", "suspeita", "suspeita_nao_confirmada", "teste_cao")
 
 
 @dataclass
@@ -145,8 +145,11 @@ class Regras:
         if a.get("box"):
             self.caixa = list(a["box"])
         self.parado = bool(a.get("stationary"))
-        sitio = sitio_de(set(a.get("current_zones") or []))
-        if sitio != self.ultimo_sitio:
+        zonas = set(a.get("current_zones") or [])
+        # O Frigate manda as primeiras atualizações de cada deteção sem zonas (ainda não as
+        # confirmou): uma lista vazia não apaga o último sítio conhecido.
+        sitio = sitio_de(zonas) if zonas else (self.ultimo_sitio or "fora das zonas")
+        if zonas and sitio != self.ultimo_sitio:
             self.ultimo_sitio = sitio
             self.sitio_desde = agora
             out.append(Diario("sitio", f"Visto em {sitio}", sitio))

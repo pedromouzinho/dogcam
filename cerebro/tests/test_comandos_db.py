@@ -82,3 +82,16 @@ def test_foto_estado_e_diario():
     assert "Alertas: 1" in textos[-1] and "desapareceu" in textos[-1]
     cmd.tratar(msg("olá"), T + 200)
     assert "/foto" in textos[-1]                              # ajuda
+
+
+def test_teste_respeita_a_pausa_e_volta_sozinho():
+    db, r, cmd, textos, _ = montar()
+    enviados = []
+    cmd.alertar = lambda acoes, agora: enviados.extend(a for a in acoes if isinstance(a, Alerta))
+    cmd.tratar(msg("/pausa 5"), T)
+    cmd.tratar(msg("/teste"), T + 60)
+    assert enviados == [] and "não foi enviado" in textos[-1]
+    cmd.tratar(msg("/teste"), T + 5 * 60 + 1)              # a pausa acabou sozinha
+    assert [a.tipo for a in enviados] == ["teste_cao"]
+    cmd.tratar(msg("/teste"), T + 6 * 60)
+    assert len(enviados) == 1 and "não repito" in textos[-1]

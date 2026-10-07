@@ -54,7 +54,7 @@ class Cerebro:
         self.lock = threading.RLock()
         self.db = DB(CFG["sqlite"])
         self.regras = Regras(L, CAMARA, **self.db.estado_inicial())
-        self.cmd = Comandos(CHAT_ID, self.regras, self.db, self.enviar_texto, self.enviar_foto, L, self.lock)
+        self.cmd = Comandos(CHAT_ID, self.regras, self.db, self.enviar_texto, self.enviar_foto, L, self.lock, self.tratar)
         cliente = None
         if os.environ.get("ANTHROPIC_API_KEY"):
             # O tempo máximo é imposto pelo Verificador; sem novas tentativas para não passar dos 15 s.
@@ -265,7 +265,7 @@ class Cerebro:
                 {"command": c, "description": d} for c, d in (
                     ("foto", "Imagem de agora"), ("estado", "Onde está e últimos eventos"),
                     ("pausa", "Pausa os alertas do cão [min]"), ("retomar", "Volta a avisar"),
-                    ("diario", "Resumo das últimas 12 h"))]})
+                    ("diario", "Resumo das últimas 12 h"), ("teste", "Alerta de teste (respeita a /pausa)"))]})
         except Exception as e:
             log.warning("setMyCommands falhou: %s", seguro(e))
         cliente = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="cerebro")

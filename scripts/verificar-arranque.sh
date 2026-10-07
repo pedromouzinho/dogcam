@@ -29,7 +29,7 @@ systemctl is-active -q mbpfan && ok "mbpfan ativo" || mau "mbpfan não está ati
 
 # Verificações de energia partilhadas com o cérebro (scripts/energia.sh).
 source "$(dirname "$0")/energia.sh"
-mhz=$(energia_mhz_max)
+mhz=$(energia_mhz)
 [ $mhz -ge 1000 ] && ok "CPU a acelerar (até $mhz MHz)" || mau "CPU presa abaixo de 1 GHz (máx. $mhz MHz): travão PROCHOT? Ver carregador e reset ao SMC"
 
 [ "$(energia_adaptador)" = 1 ] && ok "Carregador ligado (bateria a $(energia_bateria)%)" || mau "Servidor só com a bateria ($(energia_bateria)%): sem corrente!"

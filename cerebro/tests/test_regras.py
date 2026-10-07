@@ -295,3 +295,15 @@ def test_sem_nunca_ver_o_cao_nao_ha_desapareceu():
     c = Cena()
     c.passa(600)
     assert c.alertas() == []
+
+
+def test_zonas_vazias_do_frigate_nao_apagam_o_ultimo_sitio():
+    """Bug de 2026-10-07: as atualizações sem zonas punham "fora das zonas" e deram um desapareceu falso."""
+    c = Cena()
+    c.cao("new", ("cama",), parado=True, oid="a")
+    for i in range(10):                                       # deteções novas sem zonas, como no Frigate
+        c.cao("new", (), parado=True, oid=f"b{i}"); c.cao("end", (), oid=f"b{i}"); c.passa(5)
+    c.cao("end", ("cama",), oid="a")
+    c.passa(300)
+    assert c.r.ultimo_sitio == "cama" and c.alertas() == []
+    assert [d.zona for d in c.diario("sitio")] == ["cama"]    # sem diário a alternar
