@@ -1,5 +1,8 @@
+# MQTT para o cérebro (fase 2): Mosquitto só na rede Docker interna "mqtt".
 mqtt:
-  enabled: false
+  enabled: true
+  host: mosquitto
+  port: 1883
 
 auth:
   enabled: true

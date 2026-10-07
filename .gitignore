@@ -1,6 +1,7 @@
 # segredos
 .env
 *.env
+.env*
 # dados do Frigate (gravações, base de dados, caches)
 storage/
 media/

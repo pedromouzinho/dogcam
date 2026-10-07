@@ -17,6 +17,9 @@ services:
           size: 1000000000
     environment:
       FRIGATE_JWT_SECRET: ${FRIGATE_JWT_SECRET}
+    networks:
+      - default
+      - mqtt
     # Nunca 0.0.0.0: o Docker passa por cima do ufw.
     # Só a porta autenticada; a 5000 (sem login) não é publicada.
     ports:
@@ -27,3 +30,41 @@ services:
       # (/etc/ufw/after.rules).
       - "192.168.1.69:1935:1935" # cabo (principal; o iPad envia para aqui)
       - "192.168.1.249:1935:1935" # Wi-Fi (reserva)
+
+  # MQTT entre o Frigate e o cérebro. Sem portas publicadas: só na rede "mqtt".
+  mosquitto:
+    image: eclipse-mosquitto:2.0.22
+    container_name: mosquitto
+    restart: unless-stopped
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    networks:
+      - mqtt
+
+  # Cérebro DogCam (fase 2): regras sobre os eventos MQTT do Frigate e alertas no
+  # Telegram. Só recebe do .env os segredos de que precisa.
+  cerebro:
+    build: ./cerebro
+    image: dogcam-cerebro:1.0
+    container_name: cerebro
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+      - frigate
+    environment:
+      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      HEALTHCHECK_URL: ${HEALTHCHECK_URL}
+      TZ: Europe/Lisbon
+    volumes:
+      - ./cerebro/config.yaml:/config/config.yaml:ro
+      - ./scripts:/scripts:ro              # energia.sh (bateria e CPU)
+      - ./storage/cerebro:/dados           # SQLite, no disco virtual do Frigate
+    networks:
+      - default                            # API do Frigate, Telegram e healthchecks.io
+      - mqtt
+
+networks:
+  # internal: true -> sem saída para a rede local nem para a internet.
+  mqtt:
+    internal: true

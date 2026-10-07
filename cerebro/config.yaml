@@ -1,0 +1,21 @@
+# Configuração do cérebro DogCam. Depois de mudar: docker compose restart cerebro
+camara: quarto_ipad
+frigate_url: http://frigate:5000   # API interna do Frigate (rede Docker, não publicada)
+mqtt_host: mosquitto
+sqlite: /dados/cerebro.db
+
+limites:
+  anda_demasiado_s: 120     # ANDA DEMASIADO: em movimento fora de cama/descanso durante mais disto
+  varanda_s: 600            # VARANDA: alerta se não voltar da varanda ao fim disto
+  desapareceu_s: 60         # DESAPARECEU: sem ser visto e sem movimento durante isto
+  sem_imagem_s: 30          # CÂMARA SEM IMAGEM durante isto
+  repetir_alerta_s: 300     # não repetir o mesmo alerta antes disto
+  tolerancia_perda_s: 15    # perda breve da deteção que não interrompe os "2 min seguidos"
+  cpu_minima_mhz: 1000      # SERVIDOR: CPU presa abaixo disto (PROCHOT)
+  pausa_padrao_min: 30      # /pausa sem número
+  diario_horas: 12          # /diario
+
+intervalos:
+  camara_s: 5               # ler o camera_fps do Frigate e avaliar as regras
+  servidor_s: 60            # verificar a energia (scripts/energia.sh)
+  healthcheck_s: 60         # ping ao healthchecks.io (só com Frigate e câmara bem)
