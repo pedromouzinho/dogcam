@@ -4,7 +4,7 @@
 #   2. Tirar imagens a 2/s para /tmp/bench/frames/<situação>/ (uma pasta por situação, com ffmpeg -ss/-t -vf fps=2)
 #   3. Copiar modelos .onnx a comparar para /tmp/bench/ (ex.: /config/model_cache/yolov9-s-320.onnx)
 #   4. docker cp scripts/comparar-modelos.py frigate:/tmp/bench/ && docker exec frigate python3 /tmp/bench/comparar-modelos.py
-"""Compara a deteção de "dog" entre o modelo atual do Frigate e o YOLOv9.
+"""Compara a deteção de "dog" entre o SSDLite antigo e modelos YOLO (.onnx).
 
 Corre dentro do contentor do Frigate (mesmo OpenVINO e mesma GPU), num processo
 à parte, sem tocar na configuração. Para cada situação do clip, cada imagem é
@@ -28,7 +28,7 @@ def crops(img):
 
 
 class SSD:
-    nome = "SSDLite MobileNet v2 (atual)"
+    nome = "SSDLite MobileNet v2 (antigo)"
 
     def __init__(self):
         self.m = core.compile_model(core.read_model("/openvino-model/ssdlite_mobilenet_v2.xml"), "GPU")
