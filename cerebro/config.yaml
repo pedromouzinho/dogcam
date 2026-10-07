@@ -15,6 +15,22 @@ limites:
   pausa_padrao_min: 30      # /pausa sem número
   diario_horas: 12          # /diario
 
+  # SUSPEITA (fase 2B): cão em cama/descanso quase parado mas a mexer-se dentro da caixa, ou de pé
+  vigia_s: 0.4              # com o cão na cama/descanso: ler uma imagem e medir o movimento na caixa
+  suspeita_s: 5             # movimento dentro da caixa (ou de pé) durante isto -> suspeita
+  movimento_caixa_min: 0.02 # fração dos píxeis da caixa que mudam entre imagens para contar como "a mexer"
+  movimento_pausa_s: 1.5    # paragem curta que não interrompe a suspeita
+  duvida_s: 20              # NA DÚVIDA, AVISA: suspeita sem confirmação do Claude durante isto
+  claude_modelo: claude-haiku-4-5
+  claude_limiar: 0.6        # alerta se algum valor do JSON for >= isto
+  claude_intervalo_s: 30    # no máximo 1 chamada a cada isto
+  claude_por_dia: 300       # e no máximo isto por dia (depois só regras locais)
+  claude_tempo_max_s: 15    # mais do que isto conta como falha
+  claude_margem: 0.3        # margem à volta da caixa do cão nos recortes
+  claude_lado_minimo_px: 512
+  claude_preco_entrada_usd_mtok: 1.0   # Haiku 4.5, para o custo no /diario
+  claude_preco_saida_usd_mtok: 5.0
+
 intervalos:
   camara_s: 5               # ler o camera_fps do Frigate e avaliar as regras
   servidor_s: 60            # verificar a energia (scripts/energia.sh)

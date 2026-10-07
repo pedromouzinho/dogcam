@@ -13,7 +13,7 @@ SITIOS_DE_DESCANSO = ("cama", "descanso")
 SEM_ALARME_DE_DESAPARECEU = ("cama", "descanso", "porta_varanda")
 # descanso sobrepõe-se a quarto: fica o sítio mais específico.
 PRIORIDADE_DOS_SITIOS = ("cama", "descanso", "porta_varanda", "tigelas", "quarto")
-ALERTAS_DO_CAO = ("anda_demasiado", "varanda", "desapareceu")
+ALERTAS_DO_CAO = ("anda_demasiado", "varanda", "desapareceu", "suspeita", "suspeita_nao_confirmada")
 
 
 @dataclass
@@ -21,6 +21,7 @@ class Alerta:
     tipo: str
     texto: str
     foto: bool = True
+    imagens: list | None = None   # recortes (JPEG) a enviar e guardar em vez da imagem da câmara
 
 
 @dataclass
@@ -56,6 +57,8 @@ class Regras:
         self.l = limites
         self.camara = camara
         self.ativos: dict[str, dict] = {}       # deteções de dog em curso no Frigate
+        self.caixa = None                        # última caixa do cão [x1, y1, x2, y2] (fica depois de deixar de ser visto)
+        self.parado = True
         self.ultimo_sitio = ultimo_sitio
         self.sitio_desde = ultimo_visto
         self.ultimo_visto = ultimo_visto
@@ -139,6 +142,9 @@ class Regras:
             self.varanda_desde = None
             self.varanda_alertado = False
 
+        if a.get("box"):
+            self.caixa = list(a["box"])
+        self.parado = bool(a.get("stationary"))
         sitio = sitio_de(set(a.get("current_zones") or []))
         if sitio != self.ultimo_sitio:
             self.ultimo_sitio = sitio

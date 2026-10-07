@@ -55,6 +55,7 @@ services:
       TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
       TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
       HEALTHCHECK_URL: ${HEALTHCHECK_URL}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}   # Claude Haiku (fase 2B)
       TZ: Europe/Lisbon
     volumes:
       - ./cerebro/config.yaml:/config/config.yaml:ro

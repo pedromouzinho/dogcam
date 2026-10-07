@@ -10,7 +10,14 @@ AJUDA = ("Comandos:\n/foto - imagem de agora\n/estado - onde está e últimos ev
          "/diario - resumo das últimas 12 h")
 NOMES = {"anda_demasiado": "anda demasiado", "varanda": "varanda", "desapareceu": "desapareceu",
          "sem_imagem": "câmara sem imagem", "imagem_voltou": "câmara voltou", "sem_corrente": "sem corrente",
-         "corrente_voltou": "corrente voltou", "cpu_presa": "CPU presa"}
+         "corrente_voltou": "corrente voltou", "cpu_presa": "CPU presa", "suspeita": "suspeita (Claude)",
+         "suspeita_nao_confirmada": "suspeita NÃO confirmada", "limite_claude": "limite do Claude"}
+FEEDBACK = {1: " ✅", 0: " ❌", None: ""}
+
+
+def inicio_do_dia(agora: float) -> float:
+    d = datetime.fromtimestamp(agora, TZ)
+    return d.replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
 
 
 def hora(ts: float) -> str:
@@ -56,6 +63,21 @@ class Comandos:
             self.texto(AJUDA)
         return True
 
+    def botao(self, cb: dict, agora: float) -> str | None:
+        """Resposta a ✅ Certo / ❌ Errado de um alerta. None se não vier do chat do Pedro."""
+        chat = (cb.get("message") or {}).get("chat", {}).get("id")
+        if self.chat_id is None or str(chat) != self.chat_id:
+            return None
+        try:
+            _, aid, valor = (cb.get("data") or "").split(":")
+            aid, certo = int(aid), valor == "1"
+        except ValueError:
+            return "Botão desconhecido."
+        tipo = self.db.feedback(aid, certo, agora)
+        if tipo is None:
+            return "Esse alerta já não existe."
+        return f"Registado: {'✅ Certo' if certo else '❌ Errado'} ({NOMES.get(tipo, tipo)})"
+
     def estado(self, agora: float) -> str:
         with self.lock:
             r = self.r
@@ -71,7 +93,9 @@ class Comandos:
                 f"SEM IMAGEM há {duracao(agora - r.sem_imagem_desde)}" if r.sem_imagem_desde else "a verificar")
             pausa = f"em pausa até às {hora(r.pausa_ate)}" if r.em_pausa(agora) else "ativos"
             mov = "sim" if r.movimento else "não"
-        linhas = [onde, f"Movimento na câmara: {mov}", f"Câmara: {camara}", f"Alertas do cão: {pausa}", "", "Últimos eventos:"]
+        n, custo = self.db.chamadas(inicio_do_dia(agora))
+        claude = f"Verificações com o Claude hoje: {n} de {self.l['claude_por_dia']} ({custo:.3f} USD)"
+        linhas = [onde, f"Movimento na câmara: {mov}", f"Câmara: {camara}", f"Alertas do cão: {pausa}", claude, "", "Últimos eventos:"]
         linhas += [f"{hora(ts)} {t}" for ts, t in self.db.ultimos_eventos(5)] or ["(nenhum)"]
         return "\n".join(linhas)
 
@@ -86,8 +110,10 @@ class Comandos:
             linhas.append(f"  {hora(saida)} -> " + (f"{hora(regresso)} ({duracao(dur)})" if regresso else "ainda lá")
                           + (" [alerta]" if alertado else ""))
         linhas.append(f"Alertas: {len(x['alertas'])}")
-        for ts, tipo, texto, enviado in x["alertas"]:
-            linhas.append(f"  {hora(ts)} {NOMES.get(tipo, tipo)}" + ("" if enviado else " (não enviado)"))
+        for ts, tipo, texto, enviado, fb in x["alertas"]:
+            linhas.append(f"  {hora(ts)} {NOMES.get(tipo, tipo)}" + ("" if enviado else " (não enviado)") + FEEDBACK.get(fb, ""))
+        n, ok, custo = x["verificacoes"]
+        linhas.append(f"Verificações com o Claude: {n} ({n - ok} falhadas), {custo:.3f} USD")
         if x["camara"]:
             linhas.append("Câmara sem imagem:")
             linhas += [f"  {hora(ts)} {t}" for ts, t in x["camara"]]
