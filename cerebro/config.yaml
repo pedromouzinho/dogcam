@@ -29,8 +29,8 @@ limites:
   claude_tempo_max_s: 15    # mais do que isto conta como falha
   claude_margem: 0.5        # margem à volta da caixa do cão (0,3 cortava a cabeça e o cone)
   claude_lado_minimo_px: 512
-  claude_preco_entrada_usd_mtok: 1.0   # Haiku 4.5, para o custo no /diario
-  claude_preco_saida_usd_mtok: 5.0
+  claude_preco_entrada_usd_mtok: 0.10  # Haiku 5.5 (prompts até 100K tokens), para o custo no /diario
+  claude_preco_saida_usd_mtok: 0.50
 
 intervalos:
   camara_s: 5               # ler o camera_fps do Frigate e avaliar as regras

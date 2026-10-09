@@ -78,7 +78,7 @@ class Verificador:
                                                          "data": base64.standard_b64encode(jpg).decode()}})
         conteudo.append({"type": "text", "text": "Responde só com o JSON pedido."})
         return self.cliente.messages.create(
-            model=self.l["claude_modelo"], max_tokens=400, system=SISTEMA,
+            model=self.l["claude_modelo"], max_tokens=2000, system=SISTEMA,  # o Haiku 5.5 pensa antes e isso conta aqui (~250 tokens)
             messages=[{"role": "user", "content": conteudo}],
             output_config={"format": {"type": "json_schema", "schema": ESQUEMA}},
         )

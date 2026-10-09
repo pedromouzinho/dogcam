@@ -51,7 +51,7 @@ def test_resposta_boa_e_pedido_certo():
     assert r.ok and r.valores["lamber_ou_morder_penso"] == 0.85 and r.descricao == "Lambe a ligadura verde."
     assert r.custo_usd == pytest.approx(1500 / 1e6 * 1.0 + 80 / 1e6 * 5.0)
     p = c.pedidos[0]
-    assert p["model"] == "claude-haiku-4-5"
+    assert p["model"] == "claude-haiku-5-5"
     imagens = [b for b in p["messages"][0]["content"] if b["type"] == "image"]
     assert len(imagens) == 3 and base64.b64decode(imagens[0]["source"]["data"]) == JPG
     assert p["output_config"]["format"]["type"] == "json_schema"

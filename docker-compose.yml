@@ -45,7 +45,7 @@ services:
   # Telegram. Só recebe do .env os segredos de que precisa.
   cerebro:
     build: ./cerebro
-    image: dogcam-cerebro:1.0
+    image: dogcam-cerebro:1.1
     container_name: cerebro
     restart: unless-stopped
     depends_on:

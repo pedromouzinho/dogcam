@@ -9,7 +9,7 @@ LIMITES = {"anda_demasiado_s": 120, "varanda_s": 600, "desapareceu_s": 60, "sem_
            "repetir_alerta_s": 300, "tolerancia_perda_s": 15, "cpu_minima_mhz": 1000,
            "pausa_padrao_min": 30, "diario_horas": 12,
            "vigia_s": 0.4, "suspeita_s": 5, "movimento_caixa_min": 0.02, "movimento_pausa_s": 1.5, "duvida_s": 20,
-           "claude_modelo": "claude-haiku-4-5", "claude_limiar": 0.6, "claude_intervalo_s": 30, "claude_por_dia": 300,
+           "claude_modelo": "claude-haiku-5-5", "claude_limiar": 0.6, "claude_intervalo_s": 30, "claude_por_dia": 300,
            "claude_tempo_max_s": 15, "claude_margem": 0.3, "claude_lado_minimo_px": 512,
            "claude_preco_entrada_usd_mtok": 1.0, "claude_preco_saida_usd_mtok": 5.0}
 
