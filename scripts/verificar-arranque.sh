@@ -34,6 +34,13 @@ mhz=$(energia_mhz)
 
 [ "$(energia_adaptador)" = 1 ] && ok "Carregador ligado (bateria a $(energia_bateria)%)" || mau "Servidor só com a bateria ($(energia_bateria)%): sem corrente!"
 
+# Cabo de rede, partilhado com o dogcam-cabo.timer (scripts/cabo.sh).
+source "$(dirname "$0")/cabo.sh"
+cabo=$(cabo_estado)
+[ "$cabo" = ok ] && ok "Cabo de rede ligado ($CABO_IP, USB a $(cabo_usb_mbps) Mb/s)" || mau "Cabo: $cabo. Desligar, confirmar o hub e voltar a ligar"
+[ "$(cabo_usb_mbps)" = 480 ] && mau "Placa do cabo em USB 2.0 (480 Mb/s): o hub foi ligado depois do arranque"
+systemctl is-active -q dogcam-cabo.timer && ok "Vigia do cabo ativo (avisa no Telegram)" || mau "Vigia do cabo (dogcam-cabo.timer) não está ativo"
+
 tailscale status >/dev/null 2>&1 && ok "Tailscale ligado ($(tailscale ip -4))" || mau "Tailscale desligado"
 
 url=$(tailscale serve status 2>/dev/null | awk '/^https:/{print $1; exit}')

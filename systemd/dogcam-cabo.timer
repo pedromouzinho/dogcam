@@ -1,0 +1,10 @@
+[Unit]
+Description=DogCam: vigia do cabo de rede a cada minuto
+
+[Timer]
+OnBootSec=90s
+OnUnitActiveSec=1min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

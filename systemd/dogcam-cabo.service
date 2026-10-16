@@ -1,0 +1,12 @@
+# DogCam: a cada minuto (dogcam-cabo.timer) vê se a placa de rede do cabo está bem e avisa no
+# Telegram quando falha e quando volta. Corre como pedro: só lê /sys e o .env.
+# Instalado em /etc/systemd/system/. Programa: /home/pedro/dogcam/scripts/cabo.sh.
+[Unit]
+Description=DogCam: vigia do cabo de rede
+
+[Service]
+Type=oneshot
+User=pedro
+RuntimeDirectory=dogcam-cabo
+RuntimeDirectoryPreserve=yes
+ExecStart=/home/pedro/dogcam/scripts/cabo.sh vigiar
